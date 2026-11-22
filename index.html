@@ -6,7 +6,7 @@
 <title>알러뷰 – 충북대 학식 알러지 정보</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=IBM+Plex+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#F1F5EF; --surface:#FFFFFF; --surface-2:#E7EFE6; --ink:#1D3828; --ink-2:#56705F;
@@ -28,19 +28,19 @@
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 *,*::before,*::after{box-sizing:inherit}
 html{scroll-padding-top:env(safe-area-inset-top,0px);background:var(--bg)}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
 .wrap{max-width:520px;margin:0 auto;padding:0 20px 40px}
 .wrap.with-tabs{padding-bottom:110px}
 button{font:inherit;color:inherit;cursor:pointer}
 :focus-visible{outline:3px solid var(--leaf);outline-offset:2px;border-radius:8px}
-.display{font-family:"Gowun Dodum","Apple SD Gothic Neo",sans-serif;font-weight:400;letter-spacing:-.01em}
+.display,.btn,.rp b,.day .n{font-family:"Noto Sans KR","Apple SD Gothic Neo",sans-serif;font-weight:800!important;letter-spacing:-.02em}
 
 /* header */
 header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;align-items:center;justify-content:space-between;padding:14px 0 12px}
 .brand{display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;text-align:left}
 .brand .mark{width:38px;height:38px;border-radius:12px;background:var(--surface);display:grid;place-items:center;box-shadow:inset 0 0 0 1px var(--line)}
-.brand b{font-family:"Gowun Dodum",sans-serif;font-weight:400;font-size:21px}
+.brand b{font-family:"Noto Sans KR",sans-serif;font-weight:800;font-size:21px;letter-spacing:-.02em}
 .brand small{display:block;font-size:12px;color:var(--ink-2);line-height:1.2}
 .my-btn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 14px;font-size:14px;font-weight:500}
 .my-btn span{color:var(--leaf-ink);font-weight:600;margin-left:4px}
@@ -69,7 +69,7 @@ header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var
 .week-head button{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--surface);font-size:18px;line-height:1}
 .wday{margin-bottom:22px}
 .wday-h{font-size:18px;margin:0 2px 8px;display:flex;align-items:center;gap:8px}
-.today-tag{font-family:"IBM Plex Sans KR",sans-serif;font-size:12px;font-weight:600;background:var(--leaf-ink);color:var(--on-accent);border-radius:999px;padding:1px 9px}
+.today-tag{font-family:"Noto Sans KR",sans-serif;font-size:12px;font-weight:600;background:var(--leaf-ink);color:var(--on-accent);border-radius:999px;padding:1px 9px}
 .mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px}
 .mgrid .mealcard{margin:0}
 .mlist{list-style:none;margin:0;padding:0;font-size:15px;line-height:1.75}
@@ -181,7 +181,7 @@ input[type=text]:focus{outline:none;border-color:var(--leaf-ink);box-shadow:0 0 
 .auth{display:flex;flex-direction:column;justify-content:center;padding-top:48px}
 .auth .big-mark{width:96px;height:96px;border-radius:28px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--line);display:grid;place-items:center;margin-bottom:22px}
 .auth h1{font-size:40px;margin:0;line-height:1.15}
-.auth h1 small{display:block;font-family:"IBM Plex Sans KR",sans-serif;font-size:15px;color:var(--ink-2);letter-spacing:.02em;margin-top:4px}
+.auth h1 small{display:block;font-family:"Noto Sans KR",sans-serif;font-weight:500;font-size:15px;color:var(--ink-2);letter-spacing:.02em;margin-top:4px}
 .auth .lead{font-size:18px;margin:22px 0 30px;line-height:1.6}
 .auth form{display:grid;gap:4px}
 .auth .btn{margin-top:14px}
@@ -331,8 +331,7 @@ function renderAuth(){
     <p class="lead">학식 먹으러 가기 전에,<br>내 알러지부터 확인하세요.</p>
     <form id="authForm" novalidate>
       <label class="field" for="sid">충북대 학번</label>
-      <input type="text" id="sid" inputmode="numeric" autocomplete="off" maxlength="10" placeholder="2024024100">
-      <p class="help">시연 버전에서는 학번 10자리 형식만 확인해요.</p>
+      <input type="text" id="sid" inputmode="numeric" autocomplete="off" maxlength="10" placeholder="예)2024024000">
       <p class="err" id="err" role="alert"></p>
       <button class="btn" type="submit">충북대생 인증하기</button>
     </form>
@@ -532,9 +531,13 @@ function renderMy(){
   const sw = document.getElementById("sw");
   sw.addEventListener("click", () => { store.alerts = !store.alerts; save(); sw.setAttribute("aria-checked", store.alerts); });
   document.getElementById("about").addEventListener("click", () => { const t = document.getElementById("aboutText"); t.hidden = !t.hidden; });
-  document.getElementById("logout").addEventListener("click", () => {
-    if (confirm("인증을 해제할까요? 저장한 알러지 정보도 함께 지워져요.")) {
-      store = {sid:null, allergies:[], alerts:false, onboarded:false, rest:"hanbit"}; save(); view = "auth"; tab = "today"; render();
+  const lo = document.getElementById("logout");
+  lo.addEventListener("click", () => {
+    if (lo.dataset.armed) {
+      store = {sid:null, allergies:[], alerts:false, onboarded:false, rest:"hanbit"}; save(); view = "auth"; tab = "today"; render(); window.scrollTo(0,0);
+    } else {
+      lo.dataset.armed = "1";
+      lo.textContent = "한 번 더 누르면 해제돼요 (알러지 정보도 지워져요)";
     }
   });
 }
