@@ -1,0 +1,576 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>알러뷰 – 충북대 학식 알러지 정보</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=IBM+Plex+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F1F5EF; --surface:#FFFFFF; --surface-2:#E7EFE6; --ink:#1D3828; --ink-2:#56705F;
+  --line:#D6E2D5; --leaf:#74B883; --leaf-ink:#2B7346; --leaf-bg:#E2F0E3;
+  --stem:#8C2D40; --stem-bg:#F8E7EA; --on-accent:#FFFFFF; --fork:#1D3828; color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1912; --surface:#16241B; --surface-2:#1D2E23; --ink:#E3EFE5; --ink-2:#9BB4A4;
+    --line:#2A3D31; --leaf:#7CC48B; --leaf-ink:#8FD39E; --leaf-bg:#1E3626;
+    --stem:#EE97A6; --stem-bg:#3A1F26; --on-accent:#0E1912; --fork:#E3EFE5; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1912; --surface:#16241B; --surface-2:#1D2E23; --ink:#E3EFE5; --ink-2:#9BB4A4;
+  --line:#2A3D31; --leaf:#7CC48B; --leaf-ink:#8FD39E; --leaf-bg:#1E3626;
+  --stem:#EE97A6; --stem-bg:#3A1F26; --on-accent:#0E1912; --fork:#E3EFE5; color-scheme:dark;
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:520px;margin:0 auto;padding:0 20px 40px}
+.wrap.with-tabs{padding-bottom:110px}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--leaf);outline-offset:2px;border-radius:8px}
+.display{font-family:"Gowun Dodum","Apple SD Gothic Neo",sans-serif;font-weight:400;letter-spacing:-.01em}
+
+/* header */
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;align-items:center;justify-content:space-between;padding:14px 0 12px}
+.brand{display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;text-align:left}
+.brand .mark{width:38px;height:38px;border-radius:12px;background:var(--surface);display:grid;place-items:center;box-shadow:inset 0 0 0 1px var(--line)}
+.brand b{font-family:"Gowun Dodum",sans-serif;font-weight:400;font-size:21px}
+.brand small{display:block;font-size:12px;color:var(--ink-2);line-height:1.2}
+.my-btn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 14px;font-size:14px;font-weight:500}
+.my-btn span{color:var(--leaf-ink);font-weight:600;margin-left:4px}
+.page-title{font-size:28px;margin:18px 0 4px;line-height:1.3}
+.page-sub{margin:0 0 18px;color:var(--ink-2);font-size:15px}
+
+/* tab bar */
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.tabbar-inner{max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr)}
+.tab{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0 10px;color:var(--ink-2);font-size:11px;line-height:1.2}
+.tab svg{width:28px;height:28px}
+.tab[aria-current="page"]{color:var(--leaf-ink);font-weight:600}
+
+/* restaurant picker */
+.rest-pick{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:4px 0 8px}
+.rp{border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:10px 6px 9px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:2px;word-break:keep-all}
+.rp b{font-size:15px;font-weight:600}
+.rp small{font-size:11px;color:var(--ink-2);line-height:1.35}
+.rp[aria-pressed="true"]{background:var(--leaf-ink);border-color:var(--leaf-ink);color:var(--on-accent)}
+.rp[aria-pressed="true"] small{color:var(--on-accent);opacity:.85}
+.meal.off{opacity:.5}
+.mealcard h3 span.ok{color:var(--leaf-ink)}
+
+.week-head{display:flex;align-items:center;justify-content:space-between;margin:14px 0 12px}
+.week-head h1{font-size:22px;margin:0}
+.week-head button{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--surface);font-size:18px;line-height:1}
+.wday{margin-bottom:22px}
+.wday-h{font-size:18px;margin:0 2px 8px;display:flex;align-items:center;gap:8px}
+.today-tag{font-family:"IBM Plex Sans KR",sans-serif;font-size:12px;font-weight:600;background:var(--leaf-ink);color:var(--on-accent);border-radius:999px;padding:1px 9px}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px}
+.mgrid .mealcard{margin:0}
+.mlist{list-style:none;margin:0;padding:0;font-size:15px;line-height:1.75}
+.day-detail{margin-top:22px}
+
+/* verdict */
+.verdict{padding:22px 0 18px}
+.verdict h1{font-size:28px;line-height:1.35;margin:0 0 6px}
+.verdict p{margin:0;color:var(--ink-2);font-size:15px}
+.verdict .cta{margin-top:14px}
+.alert{display:flex;gap:12px;align-items:flex-start;background:var(--stem-bg);color:var(--ink);border-radius:14px;padding:12px 14px;margin-top:6px;font-size:14px}
+.alert strong{color:var(--stem)}
+.alert ul{margin:4px 0 0;padding-left:18px}
+
+/* pickers */
+.days{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:6px 0 10px}
+.day{position:relative;border:1px solid transparent;background:transparent;border-radius:14px;padding:8px 0 9px;text-align:center}
+.day .d{display:block;font-size:12px;color:var(--ink-2)}
+.day .n{display:block;font-size:18px;font-weight:600;line-height:1.3}
+.day[aria-pressed="true"]{background:var(--surface);border-color:var(--line)}
+.day.today .d{color:var(--leaf-ink);font-weight:600}
+.dot{position:absolute;top:7px;right:calc(50% - 22px);width:7px;height:7px;border-radius:50%;background:var(--stem)}
+.meals{display:grid;grid-template-columns:repeat(3,1fr);background:var(--surface-2);border-radius:14px;padding:4px;gap:4px;margin-bottom:22px}
+.meal{position:relative;border:0;background:transparent;border-radius:10px;padding:9px 0;font-weight:500;color:var(--ink-2)}
+.meal[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(20,50,30,.12)}
+.meal .dot{top:8px;right:calc(50% - 26px)}
+
+/* restaurants */
+.rest{margin-bottom:26px}
+.rest-head{display:flex;align-items:baseline;justify-content:space-between;margin:0 0 8px;padding:0 2px}
+.rest-head h2{font-size:19px;margin:0}
+.rest-head span{font-size:13px;color:var(--ink-2)}
+.rest-head span.warn{color:var(--stem);font-weight:500}
+.menu{list-style:none;margin:0;padding:0;background:var(--surface);border-radius:18px;border:1px solid var(--line)}
+.dish{display:grid;grid-template-columns:24px 1fr auto;gap:12px;align-items:start;padding:13px 16px}
+.dish+.dish{border-top:1px solid var(--line)}
+.dish .icon{padding-top:3px}
+.dish .name{font-weight:500;font-size:16px}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.tag{font-size:12px;color:var(--ink-2);background:var(--surface-2);border-radius:6px;padding:1px 7px}
+.tag.hit{background:var(--stem-bg);color:var(--stem);font-weight:600}
+.tag.none{background:transparent;padding:0}
+.status{font-size:13px;font-weight:600;border-radius:999px;padding:3px 10px;margin-top:1px;white-space:nowrap}
+.status.safe{color:var(--leaf-ink);background:var(--leaf-bg)}
+.status.caution{color:var(--stem);background:var(--stem-bg)}
+.dish.is-caution .name{color:var(--stem)}
+.empty{background:var(--surface);border:1px dashed var(--line);border-radius:18px;padding:22px;text-align:center;color:var(--ink-2)}
+.note{font-size:13px;color:var(--ink-2);border-top:1px solid var(--line);padding-top:16px;margin-top:10px}
+.note p{margin:0 0 6px}
+
+/* month */
+.cal-head{display:flex;align-items:center;justify-content:space-between;margin:18px 0 12px}
+.cal-head h1{font-size:28px;margin:0}
+.cal-nav{display:flex;gap:6px}
+.cal-nav button{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--surface);font-size:18px;line-height:1}
+.cal{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px 10px}
+.cal .wd{font-size:12px;color:var(--ink-2);text-align:center;padding-bottom:4px}
+.cell{position:relative;border:0;background:none;border-radius:12px;height:50px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-weight:500}
+.cell.out{visibility:hidden}
+.cell .mk{width:6px;height:6px;border-radius:50%;background:transparent}
+.cell .mk.c{background:var(--stem)}
+.cell .mk.s{background:var(--leaf)}
+.cell.today{box-shadow:inset 0 0 0 1.5px var(--leaf-ink)}
+.cell.past{color:var(--ink-2)}
+.cell[aria-pressed="true"]{background:var(--leaf-ink);color:var(--on-accent)}
+.cell[aria-pressed="true"] .mk.s{background:var(--on-accent)}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--ink-2);margin:10px 4px 22px}
+.legend i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:1px}
+.day-detail h2{font-size:21px;margin:0 0 10px}
+.mealcard{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px 16px;margin-bottom:10px}
+.mealcard h3{font-size:15px;margin:0 0 6px;display:flex;justify-content:space-between}
+.mealcard h3 span{font-weight:500;font-size:13px;color:var(--stem)}
+.mline{font-size:15px;margin:4px 0}
+.mline b{display:inline-block;min-width:76px;font-size:13px;font-weight:500;color:var(--ink-2)}
+.mline .c{color:var(--stem);font-weight:600}
+.link-btn{border:0;background:none;color:var(--leaf-ink);font-weight:600;padding:8px 0;font-size:15px}
+
+/* my page */
+.profile{display:flex;gap:14px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px;margin:18px 0 22px}
+.profile .av{width:56px;height:56px;border-radius:18px;background:var(--leaf-bg);display:grid;place-items:center;flex:none}
+.profile b{display:block;font-size:17px}
+.profile span{font-size:14px;color:var(--ink-2)}
+.badge{display:inline-block;font-size:12px;font-weight:600;color:var(--leaf-ink);background:var(--leaf-bg);border-radius:999px;padding:2px 9px;margin-top:4px}
+.sec{margin-bottom:22px}
+.sec-head{display:flex;justify-content:space-between;align-items:baseline;margin:0 2px 8px}
+.sec-head h2{font-size:19px;margin:0}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px 16px}
+.mychips{display:flex;flex-wrap:wrap;gap:6px}
+.mychip{font-size:14px;font-weight:600;color:var(--stem);background:var(--stem-bg);border-radius:999px;padding:4px 12px}
+.stat{display:flex;justify-content:space-between;align-items:center;padding:10px 0}
+.stat+.stat{border-top:1px solid var(--line)}
+.stat strong{font-size:18px}
+.stat strong.c{color:var(--stem)}
+.rowbtn{display:block;width:100%;text-align:left;border:0;background:none;padding:12px 0;font-size:15px}
+.rowbtn+.rowbtn{border-top:1px solid var(--line)}
+.rowbtn.danger{color:var(--stem)}
+
+/* buttons & forms */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:14px;padding:14px 20px;font-weight:600;font-size:16px;background:var(--leaf-ink);color:var(--on-accent);width:100%}
+.btn.ghost{background:transparent;color:var(--ink-2);font-weight:500}
+.btn.small{width:auto;padding:10px 16px;font-size:15px}
+label.field{display:block;font-size:14px;font-weight:500;margin-bottom:6px}
+input[type=text]{width:100%;font:inherit;font-size:18px;letter-spacing:.06em;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:13px 14px}
+input[type=text]:focus{outline:none;border-color:var(--leaf-ink);box-shadow:0 0 0 3px var(--leaf-bg)}
+.help{font-size:13px;color:var(--ink-2);margin:6px 2px 0}
+.err{font-size:13px;color:var(--stem);margin:6px 2px 0;min-height:1.3em}
+
+/* auth */
+.auth{display:flex;flex-direction:column;justify-content:center;padding-top:48px}
+.auth .big-mark{width:96px;height:96px;border-radius:28px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--line);display:grid;place-items:center;margin-bottom:22px}
+.auth h1{font-size:40px;margin:0;line-height:1.15}
+.auth h1 small{display:block;font-family:"IBM Plex Sans KR",sans-serif;font-size:15px;color:var(--ink-2);letter-spacing:.02em;margin-top:4px}
+.auth .lead{font-size:18px;margin:22px 0 30px;line-height:1.6}
+.auth form{display:grid;gap:4px}
+.auth .btn{margin-top:14px}
+
+/* allergy picker */
+.pick-head{padding:18px 0 4px}
+.pick-head h1{font-size:28px;margin:0 0 6px}
+.pick-head p{margin:0;color:var(--ink-2);font-size:15px}
+.chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px;margin:20px 0 22px}
+.chip{display:flex;align-items:center;gap:6px;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:10px;font-size:15px}
+.chip .no{font-size:11px;color:var(--ink-2);min-width:16px}
+.chip[aria-pressed="true"]{border-color:var(--stem);background:var(--stem-bg);color:var(--stem);font-weight:600}
+.chip[aria-pressed="true"] .no{color:var(--stem)}
+.switch-row{display:flex;gap:14px;align-items:center;justify-content:space-between;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-bottom:22px}
+.switch-row b{display:block;font-weight:600;font-size:15px}
+.switch-row span{font-size:13px;color:var(--ink-2)}
+.switch{flex:none;width:50px;height:30px;border-radius:999px;border:0;background:var(--line);position:relative;padding:0}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .2s}
+.switch[aria-checked="true"]{background:var(--leaf-ink)}
+.switch[aria-checked="true"]::after{transform:translateX(20px)}
+.actions{display:grid;gap:6px}
+.back{border:0;background:none;padding:6px 0;color:var(--ink-2);font-size:15px}
+
+@media (min-width:700px){.verdict h1{font-size:32px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+.reveal{animation:grow .5s ease-out both}
+@keyframes grow{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<nav class="tabbar" id="tabbar" aria-label="주요 메뉴" hidden></nav>
+
+<script>
+/* ===== 데이터 (시연용 샘플: 식당에서 받은 실제 식단으로 교체) ===== */
+const ALLERGENS = {
+  1:"난류(계란)",2:"우유",3:"메밀",4:"땅콩",5:"대두",6:"밀",7:"고등어",8:"게",9:"새우",10:"돼지고기",
+  11:"복숭아",12:"토마토",13:"아황산류",14:"호두",15:"닭고기",16:"쇠고기",17:"오징어",18:"조개류",19:"잣"
+};
+const SHORT = {1:"계란"};
+const DISHES = {
+  "쌀밥":[], "잡곡밥":[5], "김치볶음밥":[1,5,6,9,10], "잣죽":[19], "토스트":[1,2,6], "시리얼":[2,5,6], "우유":[2], "요거트":[2], "귤":[], "복숭아":[11],
+  "미역국":[5,16], "된장찌개":[5,6,18], "김치찌개":[5,6,9,10], "어묵국":[1,5,6], "콩나물국":[5], "순두부찌개":[5,6,9,10,18], "육개장":[5,6,16], "떡국":[1,5,6,16],
+  "돈가스":[1,2,5,6,10,12,13], "치킨까스":[1,2,5,6,12,15], "계란말이":[1,2], "계란찜":[1], "마라탕":[4,5,6,9,10,16],
+  "제육볶음":[5,6,10], "불고기":[5,6,16], "닭갈비":[5,6,15], "고등어구이":[7], "오징어볶음":[5,6,17], "새우튀김":[1,6,9],
+  "탕수육":[1,5,6,10,12,13], "함박스테이크":[1,2,5,6,10,12,16], "짜장면":[5,6,10], "짬뽕":[5,6,9,10,17,18], "잡채":[5,6,16],
+  "떡볶이":[5,6], "토마토 스파게티":[2,6,10,12], "군만두":[5,6,10,16], "메밀전병":[3,6,10], "게살수프":[1,6,8],
+  "배추김치":[9], "깍두기":[9], "단무지":[13], "시금치나물":[5], "콩자반":[5], "멸치볶음":[5,14], "땅콩조림":[4,5],
+  "참깨드레싱 샐러드":[1,5,6], "감자조림":[5], "어묵볶음":[1,5,6], "오이무침":[], "깻잎지":[5]
+};
+const RESTAURANTS = [
+  {id:"hanbit", name:"한빛식당", loc:"제1학생회관(E3) 1층"},
+  {id:"byeolbit", name:"별빛식당", loc:"제1학생회관(E3) 2층"},
+  {id:"eunhasu", name:"은하수식당", loc:"사범대학(N21) 옆"}
+];
+const MEALS = [{id:"b",name:"아침"},{id:"l",name:"점심"},{id:"d",name:"저녁"}];
+/* WEEK[요일 0=월..4=금][끼니][식당] = 메뉴. 시연용으로 매주 같은 식단을 반복해 보여줘요. */
+const WEEK = [
+ {b:{hanbit:["쌀밥","미역국","계란말이","깍두기","요거트"]},
+  l:{hanbit:["쌀밥","된장찌개","돈가스","시금치나물","배추김치"],byeolbit:["쌀밥","마라탕","단무지","귤"],eunhasu:["짜장면","군만두","단무지","배추김치"]},
+  d:{hanbit:["잡곡밥","김치찌개","제육볶음","콩자반","깍두기"],byeolbit:["쌀밥","어묵국","닭갈비","오이무침","배추김치"]}},
+ {b:{hanbit:["토스트","계란찜","참깨드레싱 샐러드","우유"]},
+  l:{hanbit:["쌀밥","콩나물국","고등어구이","멸치볶음","배추김치"],byeolbit:["김치볶음밥","어묵국","새우튀김","단무지"],eunhasu:["짬뽕","탕수육","단무지","깍두기"]},
+  d:{hanbit:["쌀밥","육개장","오징어볶음","감자조림","배추김치"],byeolbit:["쌀밥","된장찌개","불고기","잡채","깍두기"]}},
+ {b:{hanbit:["잣죽","계란말이","깍두기","요거트"]},
+  l:{hanbit:["잡곡밥","미역국","함박스테이크","참깨드레싱 샐러드","배추김치"],byeolbit:["떡볶이","군만두","어묵국","단무지"],eunhasu:["메밀전병","쌀밥","순두부찌개","깻잎지"]},
+  d:{hanbit:["쌀밥","김치찌개","치킨까스","땅콩조림","깍두기"],byeolbit:["쌀밥","마라탕","단무지","복숭아"]}},
+ {b:{hanbit:["쌀밥","어묵국","계란찜","감자조림","배추김치"]},
+  l:{hanbit:["쌀밥","떡국","제육볶음","오이무침","배추김치"],byeolbit:["토마토 스파게티","게살수프","참깨드레싱 샐러드","복숭아"],eunhasu:["짜장면","탕수육","단무지"]},
+  d:{hanbit:["잡곡밥","순두부찌개","고등어구이","시금치나물","깍두기"],byeolbit:["쌀밥","육개장","닭갈비","콩자반","배추김치"]}},
+ {b:{hanbit:["토스트","시리얼","우유","귤"]},
+  l:{hanbit:["쌀밥","된장찌개","오징어볶음","멸치볶음","배추김치"],byeolbit:["쌀밥","돈가스","계란말이","마라탕","단무지"],eunhasu:["짬뽕","군만두","단무지"]},
+  d:{hanbit:["쌀밥","콩나물국","불고기","잡채","배추김치"],byeolbit:["김치볶음밥","계란찜","어묵국","깍두기"]}}
+];
+
+/* ===== 상태 ===== */
+const KEY = "allerview-v1";
+let store = {sid:null, allergies:[], alerts:false, onboarded:false, rest:"hanbit"};
+try { const s = localStorage.getItem(KEY); if (s) store = Object.assign(store, JSON.parse(s)); } catch(e) {}
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(store)); } catch(e) {} }
+
+const DAYNAMES = ["월","화","수","목","금"];
+const addDays = (d,n) => { const x = new Date(d); x.setDate(x.getDate()+n); return x; };
+const same = (a,b) => a.toDateString() === b.toDateString();
+const wkIdx = d => { const g = d.getDay(); return g>=1 && g<=5 ? g-1 : -1; };
+const mondayOf = d => { const g = d.getDay(); return addDays(d, g===0 ? -6 : 1-g); };
+const menuOf = d => { const i = wkIdx(d); return i<0 ? null : WEEK[i]; };
+const md = d => `${d.getMonth()+1}월 ${d.getDate()}일`;
+
+const today = new Date(); today.setHours(0,0,0,0);
+const todayIsWeekday = wkIdx(today) >= 0;
+const defaultDate = todayIsWeekday ? today : addDays(today, today.getDay()===6 ? 2 : 1);
+const hr = new Date().getHours();
+
+let view = !store.sid ? "auth" : (!store.onboarded ? "pick" : "app");
+let tab = "today";
+let pickReturn = "today";
+let sel = { date: defaultDate, meal: hr<10 ? "b" : hr<14 ? "l" : "d" };
+let cal = { y: defaultDate.getFullYear(), m: defaultDate.getMonth(), date: defaultDate };
+let draft = null;
+
+/* ===== 판정 ===== */
+const hits = name => (DISHES[name]||[]).filter(a => store.allergies.includes(a));
+const mealCaution = (d,m) => { const w = menuOf(d); return !!w && Object.values(w[m]||{}).some(l => l.some(n => hits(n).length)); };
+const dayCaution = d => MEALS.some(m => mealCaution(d,m.id));
+const restMeal = (d,m,r=store.rest) => { const w = menuOf(d); return (w && w[m] && w[m][r]) || null; };
+const rMealCaution = (d,m) => (restMeal(d,m)||[]).some(n => hits(n).length);
+const rDayCaution = d => MEALS.some(m => rMealCaution(d,m.id));
+const aName = a => SHORT[a] || ALLERGENS[a];
+
+/* ===== 아이콘 ===== */
+const HEART = "M19 33 C10.2 27.2 6.5 22.6 6.5 17.6 C6.5 13.9 9.3 11.2 12.7 11.2 C15.4 11.2 17.7 12.8 19 15 C20.3 12.8 22.6 11.2 25.3 11.2 C28.7 11.2 31.5 13.9 31.5 17.6 C31.5 22.6 27.8 27.2 19 33Z";
+/* 로고: 포크가 꽂힌 하트 */
+function logo(size=24, mono=false){
+  const h = mono ? "currentColor" : "var(--leaf)", f = mono ? "currentColor" : "var(--fork)";
+  const holeStroke = mono ? `stroke="var(--surface)" stroke-width="1.6"` : "";
+  return `<svg width="${size}" height="${size}" viewBox="0 0 40 40" aria-hidden="true"><g transform="translate(-1.2 1.4)">
+  <path d="M20 34 V12.5" transform="rotate(45 20 20)" stroke="${f}" stroke-width="2.6" stroke-linecap="round"/>
+  <path d="${HEART}" fill="${h}" ${holeStroke}/>
+  <g transform="rotate(45 20 20)" stroke="${f}" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M20 11.5 V8.6" stroke-width="2.6"/>
+    <path d="M16.8 2.2 V5.6 Q16.8 8.8 20 8.8 Q23.2 8.8 23.2 5.6 V2.2" stroke-width="1.7"/>
+    <path d="M20 2.2 V7.4" stroke-width="1.7"/>
+  </g></g></svg>`;
+}
+const safeIcon = `<svg width="20" height="20" viewBox="5 9 28 26" aria-hidden="true"><path d="${HEART}" fill="var(--leaf)"/></svg>`;
+const cautionIcon = `<svg width="20" height="20" viewBox="5 9 28 26" aria-hidden="true"><path d="${HEART}" fill="var(--stem)"/><path d="M19 15.8 V22.6" stroke="var(--stem-bg)" stroke-width="2.6" stroke-linecap="round"/><circle cx="19" cy="26.4" r="1.6" fill="var(--stem-bg)"/></svg>`;
+const plainIcon = `<svg width="20" height="20" viewBox="5 9 28 26" aria-hidden="true"><path d="${HEART}" fill="none" stroke="var(--line)" stroke-width="2"/></svg>`;
+const calIcon = `<svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4.5" y="6.5" width="19" height="17" rx="4"/><path d="M4.5 11.5 H23.5 M9.5 4 V8.5 M18.5 4 V8.5"/><circle cx="10" cy="16.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="14" cy="16.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="18" cy="16.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="10" cy="20" r="1.1" fill="currentColor" stroke="none"/></svg>`;
+const userIcon = `<svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="14" cy="10.5" r="4.5"/><path d="M5.5 23.5 C6.5 18.8 9.8 16.5 14 16.5 C18.2 16.5 21.5 18.8 22.5 23.5"/></svg>`;
+
+const app = document.getElementById("app");
+const tabbar = document.getElementById("tabbar");
+
+const brandHeader = right => `
+  <header>
+    <button class="brand" id="home" aria-label="알러뷰 처음으로"><span class="mark">${logo(28)}</span><span><b>알러뷰</b><small>충북대 학식 알러지 정보</small></span></button>
+    ${right || ""}
+  </header>`;
+
+/* ===== 화면: 인증 ===== */
+function renderAuth(){
+  app.innerHTML = `
+  <section class="auth">
+    <div class="big-mark">${logo(64)}</div>
+    <h1 class="display">알러뷰<small>Aller-View</small></h1>
+    <p class="lead">학식 먹으러 가기 전에,<br>내 알러지부터 확인하세요.</p>
+    <form id="authForm" novalidate>
+      <label class="field" for="sid">충북대 학번</label>
+      <input type="text" id="sid" inputmode="numeric" autocomplete="off" maxlength="10" placeholder="2024024100">
+      <p class="help">시연 버전에서는 학번 10자리 형식만 확인해요.</p>
+      <p class="err" id="err" role="alert"></p>
+      <button class="btn" type="submit">충북대생 인증하기</button>
+    </form>
+  </section>`;
+  const input = document.getElementById("sid");
+  input.addEventListener("input", () => { input.value = input.value.replace(/\D/g,""); });
+  document.getElementById("authForm").addEventListener("submit", e => {
+    e.preventDefault();
+    if (!/^\d{10}$/.test(input.value)) { document.getElementById("err").textContent = "학번 10자리를 숫자로 입력해 주세요."; input.focus(); return; }
+    store.sid = input.value; save(); view = "pick"; render();
+  });
+}
+
+/* ===== 화면: 알러지 선택 ===== */
+function renderPick(){
+  if (!draft) draft = {allergies:[...store.allergies], alerts:store.alerts};
+  const first = !store.onboarded;
+  app.innerHTML = `
+  ${first ? "" : `<header><button class="back" id="back">‹ ${pickReturn==="my" ? "마이페이지로" : "오늘 학식으로"}</button></header>`}
+  <section class="pick-head" ${first ? 'style="padding-top:40px"' : ""}>
+    <h1 class="display">나의 알러지 사항은?</h1>
+    <p>해당하는 것을 모두 골라 주세요. 한 번 골라두면 다음에도 기억해요.</p>
+  </section>
+  <div class="chips" role="group" aria-label="알러지 유발 성분">
+    ${Object.entries(ALLERGENS).map(([k,v]) => `
+      <button class="chip" data-a="${k}" aria-pressed="${draft.allergies.includes(+k)}"><span class="no">${k}</span>${v}</button>`).join("")}
+  </div>
+  <div class="switch-row">
+    <div><b>주의 메뉴 알림</b><span>내 알러지 성분이 든 메뉴가 나오는 날 알림</span></div>
+    <button class="switch" id="sw" role="switch" aria-checked="${draft.alerts}" aria-label="주의 메뉴 알림"></button>
+  </div>
+  <div class="actions">
+    <button class="btn" id="saveBtn">${first ? "저장하고 오늘 학식 보기" : "저장하기"}</button>
+    ${first ? `<button class="btn ghost" id="skip">알러지가 없어요, 메뉴만 볼게요</button>` : ""}
+  </div>`;
+  app.querySelectorAll(".chip").forEach(c => c.addEventListener("click", () => {
+    const a = +c.dataset.a, i = draft.allergies.indexOf(a);
+    i>=0 ? draft.allergies.splice(i,1) : draft.allergies.push(a);
+    c.setAttribute("aria-pressed", i<0);
+  }));
+  const sw = document.getElementById("sw");
+  sw.addEventListener("click", () => { draft.alerts = !draft.alerts; sw.setAttribute("aria-checked", draft.alerts); });
+  const finish = () => { draft = null; view = "app"; tab = first ? "today" : pickReturn; render(true); };
+  document.getElementById("saveBtn").addEventListener("click", () => {
+    store.allergies = draft.allergies.sort((a,b)=>a-b); store.alerts = draft.alerts; store.onboarded = true; save(); finish();
+  });
+  const skip = document.getElementById("skip");
+  if (skip) skip.addEventListener("click", () => { store.allergies = []; store.onboarded = true; save(); finish(); });
+  const back = document.getElementById("back");
+  if (back) back.addEventListener("click", () => { draft = null; view = "app"; tab = pickReturn; render(); });
+  window.scrollTo(0,0);
+}
+
+/* ===== 식당 선택 ===== */
+const restPicker = () => `<div class="rest-pick" role="group" aria-label="학식당 선택">${RESTAURANTS.map(r =>
+  `<button class="rp" data-r="${r.id}" aria-pressed="${r.id===store.rest}"><b>${r.name}</b><small>${r.loc}</small></button>`).join("")}</div>`;
+function bindRestPicker(){
+  app.querySelectorAll(".rp").forEach(b => b.addEventListener("click", () => {
+    store.rest = b.dataset.r; save();
+    if (!restMeal(sel.date, sel.meal)) { const m = MEALS.find(m => restMeal(sel.date, m.id)); if (m) sel.meal = m.id; }
+    render();
+  }));
+}
+
+/* ===== 탭: 알러뷰 (오늘 학식) ===== */
+function renderToday(){
+  const has = store.allergies.length > 0;
+  const R = RESTAURANTS.find(r => r.id===store.rest) || RESTAURANTS[0];
+  const mon = mondayOf(sel.date);
+  const days = DAYNAMES.map((_,i) => addDays(mon,i));
+  const fri = days[4];
+  const range = `${md(mon)} – ${fri.getMonth()===mon.getMonth() ? fri.getDate()+"일" : md(fri)}`;
+
+  app.innerHTML = `
+  ${brandHeader(`<button class="my-btn" id="edit">내 알러지<span>${has ? store.allergies.length+"개" : "선택"}</span></button>`)}
+  ${restPicker()}
+  <div class="week-head">
+    <button id="pw" aria-label="이전 주">‹</button>
+    <h1 class="display">${range}</h1>
+    <button id="nw" aria-label="다음 주">›</button>
+  </div>
+  <nav class="meals" aria-label="끼니 선택">
+    ${MEALS.map(m => `<button class="meal${days.some(x => restMeal(x,m.id)) ? "" : " off"}" data-m="${m.id}" aria-pressed="${m.id===sel.meal}">${m.name}</button>`).join("")}
+  </nav>
+  ${days.map((x,i) => { const list = restMeal(x, sel.meal), t = same(x,today);
+    return `<section class="wday" ${t ? 'id="todaySec"' : ""}>
+      <h2 class="wday-h display">${md(x)} ${DAYNAMES[i]}요일${t ? '<span class="today-tag">오늘</span>' : ""}</h2>
+      ${list ? `<ul class="menu">${list.map(n => dishRow(n, has)).join("")}</ul>` : `<div class="empty">${R.name} ${MEALS.find(m=>m.id===sel.meal).name} 미운영</div>`}
+    </section>`; }).join("")}
+  <footer class="note"><p>알러지 정보는 식당 제공 식단표 기준입니다.</p></footer>`;
+
+  bindRestPicker();
+  document.getElementById("edit").addEventListener("click", () => { pickReturn = "today"; view = "pick"; render(); });
+  document.getElementById("pw").addEventListener("click", () => { sel.date = addDays(mon,-7); render(); });
+  document.getElementById("nw").addEventListener("click", () => { sel.date = addDays(mon,7); render(); });
+  app.querySelectorAll(".meal").forEach(b => b.addEventListener("click", () => { sel.meal = b.dataset.m; render(); }));
+}
+
+function dishRow(n, has){
+  const al = DISHES[n]||[], hh = hits(n), bad = hh.length>0;
+  const icon = !has ? plainIcon : bad ? cautionIcon : safeIcon;
+  const tags = al.length
+    ? al.map(a => `<span class="tag${hh.includes(a)?" hit":""}">${aName(a)}</span>`).join("")
+    : `<span class="tag none">표시 대상 알러지 성분 없음</span>`;
+  const status = !has ? "" : bad ? `<span class="status caution">주의</span>` : `<span class="status safe">안전</span>`;
+  return `<li class="dish${bad?" is-caution":""}"><span class="icon">${icon}</span><div><div class="name">${n}</div><div class="tags">${tags}</div></div>${status}</li>`;
+}
+
+/* ===== 탭: 이달의 학식 ===== */
+function monthWeeks(y,m){
+  const first = new Date(y,m,1), last = new Date(y,m+1,0);
+  const weeks = [];
+  for (let mon = mondayOf(first); mon <= last; mon = addDays(mon,7)) {
+    const days = DAYNAMES.map((_,i) => addDays(mon,i));
+    if (days.some(x => x.getMonth()===m)) weeks.push(days);
+  }
+  return weeks;
+}
+function renderMonth(){
+  const weeks = monthWeeks(cal.y, cal.m);
+  const d = cal.date, w = menuOf(d);
+
+  app.innerHTML = `
+  ${brandHeader()}
+  ${restPicker()}
+  <div class="cal-head">
+    <h1 class="display">${cal.y}년 ${cal.m+1}월</h1>
+    <div class="cal-nav"><button id="prev" aria-label="이전 달">‹</button><button id="next" aria-label="다음 달">›</button></div>
+  </div>
+  <div class="cal" role="grid" aria-label="${cal.y}년 ${cal.m+1}월 학식 달력">
+    ${DAYNAMES.map(n => `<div class="wd">${n}</div>`).join("")}
+    ${weeks.flat().map(x => {
+      const out = x.getMonth()!==cal.m;
+      return `<button class="cell${out?" out":""}${same(x,today)?" today":""}${x<today?" past":""}" data-t="${x.getTime()}" aria-pressed="${same(x,d)}" aria-label="${md(x)}" ${out?'tabindex="-1" aria-hidden="true"':""}>${x.getDate()}</button>`; }).join("")}
+  </div>
+  <section class="day-detail">
+    <h2 class="display">${md(d)} ${DAYNAMES[wkIdx(d)] || ""}요일</h2>
+    ${w ? `<div class="mgrid">${MEALS.map(m => {
+      const list = restMeal(d, m.id);
+      if (!list) return "";
+      return `<div class="mealcard"><h3>${m.name}</h3><ul class="mlist">${list.map(n => `<li>${n}</li>`).join("")}</ul></div>`; }).join("")}</div>`
+      : `<div class="empty">주말 미운영</div>`}
+  </section>`;
+
+  bindRestPicker();
+  document.getElementById("prev").addEventListener("click", () => moveMonth(-1));
+  document.getElementById("next").addEventListener("click", () => moveMonth(1));
+  app.querySelectorAll(".cell:not(.out)").forEach(b => b.addEventListener("click", () => { cal.date = new Date(+b.dataset.t); render(); }));
+}
+function moveMonth(n){
+  const x = new Date(cal.y, cal.m+n, 1);
+  cal.y = x.getFullYear(); cal.m = x.getMonth();
+  let first = x; while (wkIdx(first) < 0) first = addDays(first,1);
+  cal.date = (today.getMonth()===cal.m && today.getFullYear()===cal.y && todayIsWeekday) ? today : first;
+  render();
+}
+
+/* ===== 탭: 마이페이지 ===== */
+function renderMy(){
+  const has = store.allergies.length > 0;
+  const sid = store.sid || "";
+  const masked = sid.slice(0,4) + "****" + sid.slice(8);
+
+  app.innerHTML = `
+  ${brandHeader()}
+  <h1 class="page-title display">마이페이지</h1>
+  <div class="profile">
+    <div class="av">${logo(36)}</div>
+    <div><b>${masked}</b><span class="badge">충북대생 인증 완료</span></div>
+  </div>
+
+  <section class="sec">
+    <div class="sec-head"><h2 class="display">내 알러지</h2><button class="link-btn" id="editA">수정하기</button></div>
+    <div class="panel">${has
+      ? `<div class="mychips">${store.allergies.map(a => `<span class="mychip">${ALLERGENS[a]}</span>`).join("")}</div>`
+      : `<p style="margin:0;color:var(--ink-2)">선택한 알러지 없음</p>`}</div>
+  </section>
+
+  <section class="sec">
+    <div class="switch-row" style="margin:0">
+      <div><b>주의 메뉴 알림</b><span>내 알러지 성분이 든 메뉴가 나오는 날 알림</span></div>
+      <button class="switch" id="sw" role="switch" aria-checked="${store.alerts}" aria-label="주의 메뉴 알림"></button>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head"><h2 class="display">알러뷰</h2></div>
+    <div class="panel" style="padding-top:4px;padding-bottom:4px">
+      <button class="rowbtn" id="about">알러지 정보는 어디서 오나요?</button>
+      <button class="rowbtn danger" id="logout">인증 해제하기</button>
+    </div>
+    <p class="help" id="aboutText" hidden style="margin:10px 4px 0">식당에서 받은 일주일치 식단표와 메뉴별 알러지 유발 성분을 옮겨 보여드려요. 알러지가 심하다면 배식 전에 한 번 더 확인해 주세요.</p>
+  </section>
+  <p class="help" style="text-align:center">충북대생이 만든 서비스, 팀 체크인</p>`;
+
+  document.getElementById("editA").addEventListener("click", () => { pickReturn = "my"; view = "pick"; render(); });
+  const sw = document.getElementById("sw");
+  sw.addEventListener("click", () => { store.alerts = !store.alerts; save(); sw.setAttribute("aria-checked", store.alerts); });
+  document.getElementById("about").addEventListener("click", () => { const t = document.getElementById("aboutText"); t.hidden = !t.hidden; });
+  document.getElementById("logout").addEventListener("click", () => {
+    if (confirm("인증을 해제할까요? 저장한 알러지 정보도 함께 지워져요.")) {
+      store = {sid:null, allergies:[], alerts:false, onboarded:false, rest:"hanbit"}; save(); view = "auth"; tab = "today"; render();
+    }
+  });
+}
+
+/* ===== 하단 탭 ===== */
+const TABS = [
+  {id:"month", label:"이달의 학식", icon:() => calIcon},
+  {id:"today", label:"알러뷰", icon:active => logo(28, !active)},
+  {id:"my", label:"마이페이지", icon:() => userIcon}
+];
+function renderTabbar(){
+  const show = view === "app";
+  tabbar.hidden = !show;
+  app.classList.toggle("with-tabs", show);
+  if (!show) return;
+  tabbar.innerHTML = `<div class="tabbar-inner">${TABS.map(t => `
+    <button class="tab" data-tab="${t.id}" ${t.id===tab ? 'aria-current="page"' : ""}>${t.icon(t.id===tab)}<span>${t.label}</span></button>`).join("")}</div>`;
+  tabbar.querySelectorAll(".tab").forEach(b => b.addEventListener("click", () => {
+    if (b.dataset.tab === tab) { window.scrollTo(0,0); return; }
+    tab = b.dataset.tab;
+    if (tab === "today") sel.date = defaultDate;
+    render(); window.scrollTo(0,0);
+  }));
+}
+
+function render(animate){
+  if (view==="auth") renderAuth();
+  else if (view==="pick") renderPick();
+  else {
+    if (tab==="month") renderMonth(); else if (tab==="my") renderMy(); else renderToday();
+    const home = document.getElementById("home");
+    if (home) home.addEventListener("click", () => { tab = "today"; sel.date = defaultDate; render(); window.scrollTo(0,0); });
+  }
+  renderTabbar();
+}
+render(true);
+</script>
+</body>
+</html>
